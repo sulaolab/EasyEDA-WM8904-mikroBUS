@@ -4,8 +4,8 @@
   <img src="WM8904_mikroBUS_05/WM8904_mikroBUS_05_front.png" alt="WM8904 mikroBUS board rev.5, front side" width="46%">
   <img src="WM8904_mikroBUS_05/WM8904_mikroBUS_05_back.png" alt="WM8904 mikroBUS board rev.5, back side" width="46%">
 </p>
-<p align="center"><i>rev.5 &mdash; the latest design, not yet built. Front and back 3D views.<br>
-rev.4 is the revision that has been built and verified: <a href="WM8904_mikroBUS_04/WM8904_mikroBUS_04_front.png">front</a> / <a href="WM8904_mikroBUS_04/WM8904_mikroBUS_04_back.png">back</a>.</i></p>
+<p align="center"><i>rev.5 &mdash; the latest design, built and verified on hardware. Front and back 3D views.<br>
+rev.4, the previous revision: <a href="WM8904_mikroBUS_04/WM8904_mikroBUS_04_front.png">front</a> / <a href="WM8904_mikroBUS_04/WM8904_mikroBUS_04_back.png">back</a>.</i></p>
 
 A stereo audio codec add-on board in the mikroBUS&trade; form factor, built
 around the Cirrus Logic (Wolfson) **WM8904**: 3.5 mm LINE/MIC input and
@@ -26,19 +26,24 @@ documents (schematic PDF, front/back PCB images) for each revision.
   path.** The board is usable as-is, but the channel swap has to be undone in
   the WM8904 register configuration on the host side.
 
-### rev.05 &mdash; planned, not yet built
+### rev.05 &mdash; built, verified on hardware
 
-- Fixes the Left/Right swap of rev.04.
-- Adds a jumper that lets the XTAL clock be driven out to an external pin.
-
-Being unbuilt, rev.05 has had no electrical verification of any kind.
+- Fixes the Left/Right swap of rev.04. Verified on hardware: the input and
+  output channels now match the WM8904 register map, so the host-side swap that
+  rev.04 needed is no longer required.
+- Adds a jumper that drives the on-board XTAL clock out to the mikroBUS&trade;
+  connector, so a host can be clocked from this board's crystal. Verified on
+  hardware.
+- **The clock output is on mikroBUS&trade; pin 2 (`XTAL_OUT`), not pin 1.** On
+  some mainboards pin 1 is wired to an RGB LED, which is why the clock is
+  brought out one pin over. The schematic carries the same note.
 
 ## Projects
 
 | Directory | EasyEDA project | Status | Included reference outputs |
 | --- | --- | --- | --- |
 | `WM8904_mikroBUS_04` | `WM8904_mikroBUS_04.eprj` | Built, verified | Schematic PDF and front/back PCB PNG files |
-| `WM8904_mikroBUS_05` | `WM8904_mikroBUS_05.eprj` | Planned, unbuilt | Schematic PDF and front/back PCB PNG files |
+| `WM8904_mikroBUS_05` | `WM8904_mikroBUS_05.eprj` | Built, verified | Schematic PDF and front/back PCB PNG files |
 
 The project file in each directory is the editable EasyEDA source. The PDF and
 PNG files are exported reference outputs for reviewing the schematic and PCB
@@ -93,16 +98,6 @@ internal project and document identifiers. Importing both into one EasyEDA
 account may collide or overwrite; import them into separate accounts or
 workspaces, or rename the project after the first import.
 
-## Updating A Design
-
-When a design changes, update the corresponding `.eprj` file and regenerate
-the schematic PDF plus the front and back PCB images. Commit those files
-together so that each revision remains reviewable without EasyEDA.
-
-`.eprj` files are SQLite-based binary project files. They do not provide useful
-line-by-line Git diffs or merges, so make focused changes and use small,
-descriptive commits.
-
 ## License
 
 The original material contributed to this repository is dedicated to the
@@ -150,19 +145,22 @@ BCLK / MCLK / XTAL のクロック経路を選ぶジャンパを備えます。
   そのまま使えますが、ホスト側の WM8904 のレジスタ設定で左右を入れ替えて
   打ち消す必要があります。
 
-### rev.05 &mdash; 未製作、計画段階
+### rev.05 &mdash; 製作して動作確認済み
 
-- rev.04 の Left / Right 逆転を修正。
-- XTAL クロックを外部ピンへ出力できるジャンパを追加。
-
-未製作のため、電気的な検証は一切行われていません。
+- rev.04 の Left / Right 逆転を修正。実機で確認済みで、IN / OUT ともに WM8904 の
+  レジスタどおりになり、rev.04 で必要だったホスト側の入れ替えは不要になりました。
+- 基板上の XTAL クロックを mikroBUS&trade; コネクタへ出力するジャンパを追加。
+  これによりホスト側を本基板の水晶で動かせます。実機で確認済みです。
+- **クロック出力は mikroBUS&trade; の 2 番ピン（`XTAL_OUT`）で、1 番ピンでは
+  ありません。** 一部のメインボードでは 1 番ピンが RGB LED に接続されているため、
+  1 つ隣のピンに出しています。回路図にも同じ注記があります。
 
 ## プロジェクト
 
 | ディレクトリ | EasyEDA プロジェクト | 状態 | 同梱する参照出力 |
 | --- | --- | --- | --- |
 | `WM8904_mikroBUS_04` | `WM8904_mikroBUS_04.eprj` | 製作・確認済み | 回路図 PDF、表裏の基板 PNG |
-| `WM8904_mikroBUS_05` | `WM8904_mikroBUS_05.eprj` | 未製作（計画） | 回路図 PDF、表裏の基板 PNG |
+| `WM8904_mikroBUS_05` | `WM8904_mikroBUS_05.eprj` | 製作・確認済み | 回路図 PDF、表裏の基板 PNG |
 
 各ディレクトリの `.eprj` が編集可能な EasyEDA 本体です。PDF と PNG は、EasyEDA
 を開かずに回路図と基板を確認するための書き出し済み参照用です。
@@ -212,15 +210,6 @@ S/M/L のいずれにも一致しません。
 プロジェクト UUID とドキュメント UUID が同じです。**同じ EasyEDA アカウントへ
 両方をインポートすると衝突・上書きの恐れがあります。** 別アカウント／別
 ワークスペースに分けるか、先にインポートした側の名前を変えてください。
-
-## 設計を更新するとき
-
-設計を変えたら、該当の `.eprj` を更新し、回路図 PDF と表裏の基板画像を再出力
-してください。それらをまとめてコミットすることで、EasyEDA なしでも各リビジョン
-をレビューできる状態を保てます。
-
-`.eprj` は SQLite ベースのバイナリです。行単位の差分やマージは使えないため、
-変更は小さくまとめ、コミットメッセージで内容が分かるようにしてください。
 
 ## ライセンス
 
